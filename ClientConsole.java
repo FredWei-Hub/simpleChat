@@ -50,12 +50,11 @@ public class ClientConsole implements ChatIF
    * @param host The host to connect to.
    * @param port The port to connect on.
    */
-  public ClientConsole(String host, int port) 
+  public ClientConsole(String loginId, String host, int port) 
   {
     try 
     {
-      client= new ChatClient(host, port, this);
-      
+      client= new ChatClient(loginId, host, port, this);
       
     } 
     catch(IOException exception) 
@@ -65,8 +64,8 @@ public class ClientConsole implements ChatIF
       System.exit(1);
     }
     
-    // Create scanner object to read from console
-    fromConsole = new Scanner(System.in); 
+    // Read from console
+    fromConsole = new Scanner(System.in);
   }
 
   
@@ -117,18 +116,42 @@ public class ClientConsole implements ChatIF
    */
   public static void main(String[] args) 
   {
+	// Variables
     String host = "";
-
-
+    //
+    String loginId = "";
+    int port = 0;
+    
+    // first command line for login id
     try
     {
-      host = args[0];
+      loginId = args[0];
     }
-    catch(ArrayIndexOutOfBoundsException e)
+    catch(ArrayIndexOutOfBoundsException e) // The user must input their login ID
     {
-      host = "localhost";
+      System.out.println ("login ID is mandatory. Quitting...");
+      return;
     }
-    ClientConsole chat= new ClientConsole(host, DEFAULT_PORT);
+    // second line for host
+    try
+    {
+      host = args[1];
+    }
+    catch(ArrayIndexOutOfBoundsException e) // if the user did not input the host
+    {
+      host = "localhost"; // default host
+    }
+    // third line for port number
+    try
+    {
+      port = Integer.parseInt(args[2]);
+    }
+    catch(ArrayIndexOutOfBoundsException e) // if the user did not input the port
+    {
+      port = DEFAULT_PORT; // default port
+    }
+    // creating new client console
+    ClientConsole chat= new ClientConsole(loginId, host, port);
     chat.accept();  //Wait for console data
   }
 }
